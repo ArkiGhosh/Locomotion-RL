@@ -307,9 +307,9 @@ class ATD3_RNN(object):
 		torch.save(self.critic.state_dict(), '%s/%s_critic.pth' % (directory, filename))
 
 	def load(self, filename, directory):
-		actor_path = glob.glob('%s/%s_actor.pth' % (directory, filename))[0]
+		actor_path = '%s/%s_actor.pth' % (directory, filename)
 		self.actor.load_state_dict(torch.load(actor_path))
-		critic_path = glob.glob('%s/%s_critic.pth' % (directory, filename))[0]
+		critic_path = '%s/%s_critic.pth' % (directory, filename)
 		print('actor path: {}, critic path: {}'.format(actor_path, critic_path))
 		self.critic.load_state_dict(torch.load(critic_path))
 
@@ -481,12 +481,14 @@ class Solver(object):
         video_dir = '{}/video_all'.format(self.result_path)
         if not os.path.exists(video_dir):
             os.makedirs(video_dir)
-        model_path_vec = glob.glob(self.result_path + '/{}'.format(self.args.log_path))
-        print(model_path_vec)
-        for model_path in model_path_vec:
-            self.policy.load("%s" % (self.file_name + self.args.load_policy_idx), directory=model_path)
+        files = './' + self.result_path + '/' + self.args.log_path
+        for model_path in os.listdir(files):
+            if (model_path == ".ipynb_checkpoints"):
+                continue
+            self.policy.load("%s" % (self.file_name + self.args.load_policy_idx), directory=files + '/' + model_path)
             for _ in range(1):
                 if self.args.save_video:
+                    print("check")
                     video_name = video_dir + '/{}_{}_{}.mp4'.format(
                         datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
                         self.file_name, self.args.load_policy_idx)
@@ -587,6 +589,7 @@ def main(args):
     if not args.eval_only:
         sol.train()
     else:
+        args.save_video = True
         sol.eval_only()
     env.close()
 
