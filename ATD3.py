@@ -204,7 +204,7 @@ class Critic(nn.Module):
 		return x1, x2
 
 
-class ATD3_RNN(object):
+class ATD3(object):
 	def __init__(self, state_dim, action_dim, max_action):
 		self.actor = Actor(state_dim, action_dim, max_action).to(device)
 		self.actor_target = Actor(state_dim, action_dim, max_action).to(device)
@@ -352,7 +352,7 @@ class Solver(object):
         max_action = float(env.action_space.high[0])
 
         # Initialize policy
-        policy = ATD3_RNN(state_dim, action_dim, max_action)
+        policy = ATD3(state_dim, action_dim, max_action)
         self.policy = policy
         print('-------Current policy: {} --------------'.format(self.policy.__class__.__name__))
         self.replay_buffer = ReplayBufferMat(max_size=args.max_timesteps)
