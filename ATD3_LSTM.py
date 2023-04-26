@@ -32,7 +32,7 @@ class Critic(nn.Module):
 		super(Critic, self).__init__()
 
 		# Q1 architecture
-		self.lstm1 = nn.LSTM(state_dim, l1_hidden_dim, hidden_layer, batch_first=True)
+		self.lstm1 = nn.LSTM(state_dim, l1_hidden_dim, hidden_layer, batch_first=True) #set bidirectional flag
 		self.l1 = nn.Linear(action_dim, 100)
 		self.l2 = nn.Linear(400, 300)
 		self.l3 = nn.Linear(300, 1)
